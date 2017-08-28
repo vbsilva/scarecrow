@@ -10,8 +10,11 @@ GPIO.setmode(GPIO.BCM)
 dht_pin = 2
 ldr_pin = 3
 rain_pin = 4
+soil_pin = 14
 
 GPIO.setup(rain_pin, GPIO.IN)
+GPIO.setup(soil_pin, GPIO.IN)
+
 
 def rc_time(ldr_pin):
   count = 0
@@ -30,6 +33,7 @@ def rc_time(ldr_pin):
  
 while(1):
   os.system("clear")
+  print("soil: {0}".format(GPIO.input(soil_pin)))
 
   print("rain: {0}".format(GPIO.input(rain_pin)))
 
