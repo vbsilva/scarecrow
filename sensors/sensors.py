@@ -43,6 +43,6 @@ while(1):
   if umid is not None and temp is not None:
     print("temperature: " + str(temp),)
     print("humidity: " + str(umid))
-    time.sleep(2)
+    time.sleep(5)
   else:
     print("Falha ao ler dados do DHT11 !!!")
