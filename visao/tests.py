@@ -17,7 +17,7 @@ loaded_model.compile(loss = "binary_crossentropy",
                 metrics=["accuracy"])
 
 print("Should be bad(1)")
-testinho = cv2.imread('IMG_5042.jpg')
+testinho = cv2.imread('IMG_5042.JPG')
 testinho = cv2.resize(testinho,(200,200))
 testinho = np.array(testinho)
 testinho = testinho.astype('float32')
