@@ -1,5 +1,6 @@
 import time
 import Adafruit_DHT
+import Adafruit_ADS1x15
 import RPi.GPIO as GPIO
 import os
 
@@ -10,8 +11,9 @@ class Sensors(object):
 
     def __init__(self):
         self.dht = Adafruit_DHT.DHT11
+        self.adc = Adafruit_ADS1x15.ADS1115()
         GPIO.setmode(GPIO.BCM)
-
+        self.gain = 1
         self.dht_pin = 4
         self.ldr_pin = 17
         self.relay_pin = 27
@@ -44,7 +46,7 @@ class Sensors(object):
         GPIO.output(self.blueLed_pin, GPIO.LOW)
         GPIO.output(self.redLed_pin, GPIO.HIGH)
         GPIO.output(self.greenLed_pin, GPIO.HIGH)
-
+    '''
     def redLed(self):
         GPIO.output(self.redLed_pin, GPIO.LOW)
         GPIO.output(self.blueLed_pin, GPIO.HIGH)
@@ -71,7 +73,7 @@ class Sensors(object):
             return ret
         else:
             print("Falha ao ler dados do DHT11 !!!")
-
+    '''
     # def get_rain(self):
     #     return GPIO.input(self.rain_pin)
 
@@ -79,16 +81,7 @@ class Sensors(object):
     #     return GPIO.input(self.soil_pin)
 
     def get_lum(self):
-        count = 0
-        GPIO.setup(self.ldr_pin, GPIO.OUT)
-        GPIO.output(self.ldr_pin, GPIO.LOW)
-        time.sleep(0.1)
-
-        GPIO.setup(self.ldr_pin, GPIO.IN)
-        while GPIO.input(self.ldr_pin) == GPIO.LOW:
-            count += 1
-
-        return count
+        return self.adc.read_adc(3,gain=self.gain)
 
     def set_relay(self, status):
         if status:
@@ -98,28 +91,15 @@ class Sensors(object):
 
 
 test = Sensors()
-print "\t\tSCARECROW"
+print ("\t\tSCARECROW")
 time.sleep(0.1)
 
 while(1):
     try:
-        print "lum:",
-        print test.get_lum()
-        if( test.get_lum() > 4000):
-             test.set_relay(True)
-             test.redLed()
-        else:
-            test.set_relay(False)
-            test.greenLed()
-
-        data = test.get_temp_n_hum()
-        print "temp:",
-        print data[0]
-        print "hum:",
-        print data[1]
-        test.blueLed()
+        print ("lum:",end="")
+        print (test.get_lum())
     except KeyboardInterrupt:
-        print "flw"
+        print ("flw")
         GPIO.cleanup()
 
     time.sleep(2)
