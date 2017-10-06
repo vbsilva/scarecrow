@@ -4,16 +4,18 @@ import cv2
 import numpy as np
 import sensors
 import imgprocessing
+import sconn
 
 '''
     This is the main Module of the program
 '''
 
-def send_message()
-    '''
-        Maybe create another module ?
-    '''
-    pass
+def packdata(data):
+    
+
+def send_message(data,sigfox)
+    data = packdata(data)
+    sigfox.send_message(data)
 
 def main():
     '''
@@ -22,6 +24,7 @@ def main():
     print("Scarecrow starting...")
     print("Loading Sensors")
     source = Sensors()
+    sigfox = SerialConnection() 
     time.sleep(0.1)
     print("Loading AIModel")
     img_handler = ImgProcessing(camera=1,debug=True)
