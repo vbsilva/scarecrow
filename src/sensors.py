@@ -1,7 +1,9 @@
 import time
 import Adafruit_DHT
+import Adafruit_ADS1x15
 import RPi.GPIO as GPIO
 import os
+import sys
 
 class Sensors(object):
     '''
@@ -9,9 +11,10 @@ class Sensors(object):
     '''
 
     def __init__(self):
+        self.adc = Adafruit_ADS1x15.ADS1115()
         self.dht = Adafruit_DHT.DHT11
         GPIO.setmode(GPIO.BCM)
-
+        self.gain = 1
         self.dht_pin = 4
         self.ldr_pin = 17
         self.relay_pin = 27
@@ -72,23 +75,17 @@ class Sensors(object):
         else:
             print("Falha ao ler dados do DHT11 !!!")
 
-    # def get_rain(self):
-    #     return GPIO.input(self.rain_pin)
+    def get_rain(self):
+        return self.adc.read_adc(1,gain=self.gain)
 
-    # def get_soil(self):
-    #     return GPIO.input(self.soil_pin)
+    def get_soil(self):
+        return self.adc.read_adc(2,gain=self.gain)
 
     def get_lum(self):
-        count = 0
-        GPIO.setup(self.ldr_pin, GPIO.OUT)
-        GPIO.output(self.ldr_pin, GPIO.LOW)
-        time.sleep(0.1)
+        return self.adc.read_adc(3,gain=self.gain)
 
-        GPIO.setup(self.ldr_pin, GPIO.IN)
-        while GPIO.input(self.ldr_pin) == GPIO.LOW:
-            count += 1
-
-        return count
+    def get_Co(self):
+        return self.adc.read_adc(0,gain=self.gain)
 
     def set_relay(self, status):
         if status:
@@ -96,30 +93,35 @@ class Sensors(object):
         else:
             GPIO.output(self.relay_pin, GPIO.HIGH)
 
-
 test = Sensors()
-print "\t\tSCARECROW"
+print ("\t\tSCARECROW")
 time.sleep(0.1)
 
 while(1):
     try:
-        print "lum:",
-        print test.get_lum()
-        if( test.get_lum() > 4000):
-             test.set_relay(True)
-             test.redLed()
-        else:
-            test.set_relay(False)
-            test.greenLed()
-
+        print("\n\n\n\nReadings : \n\n")
+        print("Luminosity : ", test.get_lum())
+       # if( test.get_lum() > 4000):
+       #      test.set_relay(True)
+       #      test.redLed()
+       # else:
+       #     test.set_relay(False)
+       #     test.greenLed()
         data = test.get_temp_n_hum()
-        print "temp:",
-        print data[0]
-        print "hum:",
-        print data[1]
+        print("Temperature : ", data[0])
+        print("Humidity : ",data[1])
+        print("Water : ", test.get_rain())
+        print("Soil Humidity: ",test.get_soil())
+        print("Co2: ", test.get_Co())
         test.blueLed()
+        time.sleep(2)
+        test.redLed()
+        time.sleep(2)
+        test.greenLed()
+        time.sleep(2)
+        test.noLed()
     except KeyboardInterrupt:
-        print "flw"
+        print ("flw")
         GPIO.cleanup()
 
     time.sleep(2)
