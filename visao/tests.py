@@ -11,12 +11,12 @@ file = open("model.json","r")
 loaded_model = file.read()
 file.close()
 loaded_model = model_from_json(loaded_model)
-loaded_model.load_weights("first_try.h5")
+loaded_model.load_weights("weights.h5")
 loaded_model.compile(loss = "binary_crossentropy",
                 optimizer = "rmsprop",
                 metrics=["accuracy"])
 
-print("Should be bad")
+print("Should be bad(0)")
 testinho = cv2.imread('3.jpg')
 testinho = cv2.resize(testinho,(200,200))
 testinho = np.array(testinho)
@@ -27,7 +27,7 @@ print((loaded_model.predict(testinho)))
 print(loaded_model.predict_classes(testinho))
 
 
-print("Should be good")
+print("Should be good (1)")
 opa = cv2.imread('2.jpg')
 opa = cv2.resize(opa,(200,200))
 opa = np.array(opa)
