@@ -16,8 +16,8 @@ loaded_model.compile(loss = "binary_crossentropy",
                 optimizer = "rmsprop",
                 metrics=["accuracy"])
 
-print("Should be bad(0)")
-testinho = cv2.imread('3.jpg')
+print("Should be bad(1)")
+testinho = cv2.imread('IMG_5042.jpg')
 testinho = cv2.resize(testinho,(200,200))
 testinho = np.array(testinho)
 testinho = testinho.astype('float32')
@@ -26,9 +26,8 @@ testinho = np.expand_dims(testinho, axis=0)
 print((loaded_model.predict(testinho)))
 print(loaded_model.predict_classes(testinho))
 
-
-print("Should be good (1)")
-opa = cv2.imread('2.jpg')
+print("Should be good (0)")
+opa = cv2.imread('38.jpg')
 opa = cv2.resize(opa,(200,200))
 opa = np.array(opa)
 opa = opa.astype('float32')
