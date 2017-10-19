@@ -21,19 +21,21 @@ class ImgProcessing(object):
         self.loaded_model = model_from_json(file)
         self.loaded_model.load_weights("weights.h5")
         self.loaded_model.compile(loss = "binary_crossentropy",
-                             optimzer = "rmsprop",
+                             optimizer = "rmsprop",
                              metrics=["accuracy"])
     
     def process_image(self):
+        while self.capture.isOpened == False:
+            time.sleep(0.1)
         ret, frame = self.capture.read()
         if self.debug :
             cv2.imshow("fonte", frame)
-        cv2.resize(frame,(200,200))
+        frame = cv2.resize(frame,(200,200))
         if self.debug:
             cv2.imshow("resized", frame)
         frame = np.array(frame)
         frame = frame.astype('float32')
-        frame /= 255
+        frame /= 255.0
         frame = np.expand_dims(frame, axis = 0)
         predict = self.loaded_model.predict(frame)
         if self.debug:
@@ -44,5 +46,5 @@ class ImgProcessing(object):
         if self.debug:
             cv2.waitKey(0)
             cv2.destroyAllWindows()
-        return classification
+        return classification[0][0]
         time.sleep(5)

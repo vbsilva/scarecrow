@@ -2,50 +2,66 @@ import os
 import time
 import cv2
 import numpy as np
-import sensors
-import imgprocessing
-import sconn
+from sensors import Sensors
+from imgprocessing import ImgProcessing
+from sconn import SerialConnection
 
 '''
     This is the main Module of the program
 '''
 
-def packdata(data):
-    pass    
-
 def send_message(data,sigfox):
-    data = packdata(data)
     sigfox.send_message(data)
 
 def main():
     '''
         Main Function of the program
     '''
-    print("Scarecrow starting...")
-    print("Loading Sensors")
+    #print("Scarecrow starting...")
+    #print("Loading Sensors")
     source = Sensors()
-    sigfox = SerialConnection() 
+    sigfox = SerialConnection()
     time.sleep(0.1)
     print("Loading AIModel")
-    img_handler = ImgProcessing(camera=1,debug=True)
+    img_handler = ImgProcessing(camera=0,debug=False)
     print("AI Model loaded")
     while(True):
         try:
+            sigfox.open_conn()
             data = source.get_temp_n_hum()
             temperature = data[0]
             humidity = data[1]
             luminosity = source.get_lum()
+            if luminosity >= 20000:
+                luminosity = 0
+            elif luminosity >= 10000:
+                luminosity = 1
+            elif luminosity >= 5000:
+                luminosity = 2
+            else:
+                luminosity = 3
             rain = source.get_rain()
+            if rain >= 5000:
+                rain = 1
+            else:
+                rain = 0
             soil = source.get_soil()
-            bugs = img_handle.process_image()
-            data = [bugs,soil,rain,luminosity,humidity,temperature]
+            if soil >= 20000:
+                soil = 0
+            else:
+                soil = 1
+            bugs = img_handler.process_image()
+            print(bugs)
+            data = [int(temperature),int(humidity),100,luminosity,bugs,rain,soil]
             print(data)
-            #send_message(data)
+            send_message(data,sigfox)
+            sigfox.close_conn()
+            source.blueLed()
         except KeyboardInterrupt:
             print("flw")
             GPIO.cleanup()
     
-        time.sleep(10)
+        time.sleep(30)
     
     GPIO.cleanup()
         
