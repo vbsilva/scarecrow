@@ -100,26 +100,48 @@ time.sleep(0.1)
 while(1):
     try:
         print("\n\n\n\nReadings : \n\n")
-        print("Luminosity : ", test.get_lum())
        # if( test.get_lum() > 4000):
        #      test.set_relay(True)
        #      test.redLed()
        # else:
        #     test.set_relay(False)
        #     test.greenLed()
-        data = test.get_temp_n_hum()
-        print("Temperature : ", data[0])
-        print("Humidity : ",data[1])
+        luminosity = test.get_lum()
+        print("Luminosity = ",luminosity)
+        if luminosity >= 20000:
+           luminosity = 0
+        elif luminosity >= 10000:
+           luminosity = 1
+        elif luminosity >= 5000:
+           luminosity = 2
+        elif luminosity < 5000:
+           luminosity = 3
+        temp,hum = test.get_temp_n_hum()
+        rain = test.get_rain()
+        soilhum = test.get_soil()
+        print("Temperature : ", temp)
+        print("Humidity : ", hum)
         print("Water : ", test.get_rain())
         print("Soil Humidity: ",test.get_soil())
-        print("Co2: ", test.get_Co())
+        if rain >= 5000:
+           rain = 1
+        else:
+           rain = 0
+        if soilhum >= 20000:
+           soilhum = 0
+        else:
+           soilhum = 1
+        print("L, Temp, Hum, Rain, SoilHum")
+        data = [int(luminosity),int(temp),int(hum),int(rain),int(soilhum)]
+        print(data)
+        #print("Co2: ", test.get_Co())
         test.blueLed()
         time.sleep(2)
         test.redLed()
         time.sleep(2)
         test.greenLed()
         time.sleep(2)
-        test.noLed()
+        test.noLeds()
     except KeyboardInterrupt:
         print ("flw")
         GPIO.cleanup()

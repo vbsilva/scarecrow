@@ -11,9 +11,9 @@ import sconn
 '''
 
 def packdata(data):
-    
+    pass    
 
-def send_message(data,sigfox)
+def send_message(data,sigfox):
     data = packdata(data)
     sigfox.send_message(data)
 
@@ -39,7 +39,8 @@ def main():
             soil = source.get_soil()
             bugs = img_handle.process_image()
             data = [bugs,soil,rain,luminosity,humidity,temperature]
-            send_message(data)
+            print(data)
+            #send_message(data)
         except KeyboardInterrupt:
             print("flw")
             GPIO.cleanup()
