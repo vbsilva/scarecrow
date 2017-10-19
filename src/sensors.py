@@ -92,3 +92,37 @@ class Sensors(object):
             GPIO.output(self.relay_pin, GPIO.LOW)
         else:
             GPIO.output(self.relay_pin, GPIO.HIGH)
+
+while(True):
+    source = Sensors()
+    #data = source.get_temp_n_hum()
+    #temperature = data[0]
+    #humidity = data[1]
+    luminosity = source.get_lum()
+    print("Raw Lum :",luminosity)
+    if luminosity >= 20000:
+        luminosity = 0
+    elif luminosity >= 10000:
+        luminosity = 1
+    elif luminosity >= 5000:
+        luminosity = 2
+    else:
+        luminosity = 3
+    rain = source.get_rain()
+    print("Raw Rain :",rain)
+    if rain >= 5000:
+        rain = 1
+    else:
+        rain = 0
+    soil = source.get_soil()
+    print("Raw Soil Hum :",soil)
+    if soil >= 20000:
+        soil = 0
+    elif soil > 12000:
+        soil = 1
+    else:
+        soil = 2
+
+    data = [luminosity,0,rain,soil]
+    print(data)
+    input()

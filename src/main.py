@@ -48,20 +48,23 @@ def main():
             soil = source.get_soil()
             if soil >= 20000:
                 soil = 0
-            else:
+            elif soil >= 17000:
                 soil = 1
-            bugs = img_handler.process_image()
+            elif soil >= 100:
+                soil = 2    
+            bugs = img_handler.process_image(source)
             print(bugs)
             data = [int(temperature),int(humidity),100,luminosity,bugs,rain,soil]
             print(data)
             send_message(data,sigfox)
             sigfox.close_conn()
             source.blueLed()
+            img_handler.capture.release()
         except KeyboardInterrupt:
             print("flw")
             GPIO.cleanup()
     
-        time.sleep(30)
+        time.sleep(5)
     
     GPIO.cleanup()
         
